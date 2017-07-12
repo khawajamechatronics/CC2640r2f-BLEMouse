@@ -123,7 +123,7 @@
 
 #define reportQEmpty()                        (firstQIdx == lastQIdx)
 
-#define HIDDEVICE_TASK_PRIORITY               2
+#define HIDDEVICE_TASK_PRIORITY               3
 
 #ifndef HIDDEVICE_TASK_STACK_SIZE
 #define HIDDEVICE_TASK_STACK_SIZE             400
@@ -192,7 +192,7 @@ typedef struct
  */
 
 // Entity ID globally used to check for source and/or destination of messages.
-ICall_EntityID selfEntity;
+static ICall_EntityID selfEntity;
 
 // Event globally used to post local events and pend on system and
 // local events.
@@ -211,7 +211,7 @@ Task_Struct hidDeviceTask;
 Char hidDeviceTaskStack[HIDDEVICE_TASK_STACK_SIZE];
 
 // GAP State
-static gaprole_States_t hidDevGapState = GAPROLE_INIT;
+gaprole_States_t hidDevGapState = GAPROLE_INIT;
 
 // TRUE if connection is secure
 static uint8_t hidDevConnSecure = FALSE;

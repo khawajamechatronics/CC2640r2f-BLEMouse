@@ -78,6 +78,7 @@
 #include "board.h"
 
 #include "hidemukbd.h"
+#include "gyro.h"
 
 /*********************************************************************
  * MACROS
@@ -160,7 +161,7 @@
 //#define KEY_RIGHT_HID_BINDING                 HID_KEYBOARD_RIGHT_ARROW
 
 // Task configuration
-#define HIDEMUKBD_TASK_PRIORITY               1
+#define HIDEMUKBD_TASK_PRIORITY               2
 
 #ifndef HIDEMUKBD_TASK_STACK_SIZE
 #define HIDEMUKBD_TASK_STACK_SIZE             644
@@ -171,9 +172,10 @@
 // Task Events
 #define HIDEMUKBD_ICALL_EVT                   ICALL_MSG_EVENT_ID // Event_Id_31
 #define HIDEMUKBD_QUEUE_EVT                   UTIL_QUEUE_EVENT_ID // Event_Id_30
+#define GR_STATE_CHANGE_EVT                   Event_Id_05
 
 #define HIDEMUKBD_ALL_EVENTS                  (HIDEMUKBD_ICALL_EVT | \
-                                               HIDEMUKBD_QUEUE_EVT)
+                                               HIDEMUKBD_QUEUE_EVT | GR_STATE_CHANGE_EVT)
 
 /*********************************************************************
  * TYPEDEFS
@@ -184,6 +186,12 @@ typedef struct
 {
   appEvtHdr_t hdr; // Event header
 } hidEmuKbdEvt_t;
+
+typedef struct
+{
+  appEvtHdr_t hdr; // Event header
+  uint8_t x,y;
+} mousepos_t;
 
 /*********************************************************************
  * GLOBAL VARIABLES
@@ -563,7 +571,6 @@ static void HidEmuKbd_processStackMsg(ICall_Hdr *pMsg)
 
     case HCI_GAP_EVENT_EVENT:
       {
-
         // Process HCI message
         switch(pMsg->status)
         {
@@ -613,6 +620,12 @@ static void HidEmuKbd_processStackMsg(ICall_Hdr *pMsg)
 
             }
             break;
+          case HCI_BLE_CONNECTION_COMPLETE_EVENT:
+          // Process HCI Command Complete Event
+          {
+              set_gyro_work(1);
+          }
+          break;
 
           default:
             break;
@@ -744,7 +757,7 @@ static void HidEmuKbd_sendMouseReport(uint8_t buttons)
   uint8_t buf[HID_MOUSE_IN_RPT_LEN];
 
   buf[0] = buttons;   // Buttons
-  buf[1] = 0xff;         // X
+  buf[1] = 10;         // X
   buf[2] = 0;         // Y
   buf[3] = 0;         // Wheel
   buf[4] = 0;         // AC Pan
