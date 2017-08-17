@@ -1,10 +1,3 @@
-/*
- * mpu6500.h
- *
- *  Created on: Jul 8, 2017
- *      Author: Henorvell
- */
-
 #ifndef __MPU6500_H
 #define __MPU6500_H
 

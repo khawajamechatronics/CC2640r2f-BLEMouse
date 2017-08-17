@@ -1,10 +1,3 @@
-/*
- * kalman.h
- *
- *  Created on: Jul 8, 2017
- *      Author: Henorvell
- */
-
 #ifndef APPLICATION_GYRO_H_
 #define APPLICATION_GYRO_H_
 
@@ -61,9 +54,7 @@ typedef struct
 void Kanman_Init(KALMAN_STRUCT * kalman);
 void Kanman_Filter(KALMAN_STRUCT * kalman,float Gyro,float Accel,unsigned int dt);   //Gyro陀螺仪的测量值  |  Accel加速度计的角度计  |  dt的时间考虑用小数 或 更小的分度表示
 
-void set_gyro_work(char a);
-
-extern void Gyro_createTask(void);
+void Gyro_createTask(void);
 extern KALMAN_STRUCT *kalman;
 
 #endif /* APPLICATION_GYRO_H_ */

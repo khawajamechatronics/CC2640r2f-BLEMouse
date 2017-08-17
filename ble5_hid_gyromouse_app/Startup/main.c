@@ -161,7 +161,7 @@ int main()
   /* Kick off application - Priority 2 */
   HidEmuKbd_createTask();
 
-  Gyro_createTask();/*Priority 1*/
+  Gyro_createTask();
 
   /* enable interrupts and start SYS/BIOS */
   BIOS_start();

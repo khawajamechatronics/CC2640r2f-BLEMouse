@@ -1,9 +1,3 @@
-/*
- * kalman.c
- *
- *  Created on: Jul 8, 2017
- *      Author: Henorvell
- */
 #include "mpu6500.h"
 #include "util.h"
 
@@ -26,17 +20,18 @@
 #include "hidemukbd.h"
 #include "board.h"
 
-/*********************************************************************
- * LOCAL VARIABLES
- */
+#define GR_QUEUE_EVT                          Event_Id_05
+
 KALMAN_STRUCT *kalman;
-char gyro_work = 0;
 // Entity ID globally used to check for source and/or destination of messages
-//static ICall_EntityID gyroEntity;
+static ICall_EntityID gyroEntity;
 
 // Event globally used to post local events and pend on system and
 // local events.
-//static ICall_SyncHandle gyroEvent;
+static ICall_SyncHandle gyroEvent;
+
+static Queue_Struct appMsg;
+static Queue_Handle appMsgQueue;
 
 // Task configuration
 Task_Struct gyroTask;
@@ -64,13 +59,7 @@ typedef struct
 static void Gyro_init(void);
 static void Gyro_taskFxn(UArg a0, UArg a1);
 static uint8_t Gyro_enqueueMsg(uint8_t x, uint8_t y);
-
-void set_gyro_work(char a)
-{
-    gyro_work=a;
-    PIN_setOutputValue(ledPinHandle, Board_PIN_LED0, a);
-    PIN_setOutputValue(ledPinHandle, Board_PIN_LED1, a);
-}
+void Gyro_createTask(void);
 
 void Gyro_createTask(void)
 {
@@ -88,8 +77,8 @@ void Gyro_init(void)
     Kanman_Init(kalman);
     SPI_init();
     ledPinHandle = PIN_open(&ledPinState, ledPinTable);
-    //ICall_registerApp(&gyroEntity, &gyroEvent);
-    //appMsgQueue = Util_constructQueue(&appMsg);
+    ICall_registerApp(&gyroEntity, &gyroEvent);
+    appMsgQueue = Util_constructQueue(&appMsg);
 }
 
 void Gyro_taskFxn(UArg a0, UArg a1)
@@ -99,11 +88,10 @@ void Gyro_taskFxn(UArg a0, UArg a1)
     // Application main loop.
     for (;;)
     {
-        if(gyro_work)
-        {
-            //Gyro_enqueueMsg(10,10);
-        }
-        //Semaphore_pend(semHandle, BIOS_WAIT_FORERVER);
+        uint32_t events;
+        events = Event_pend(gyroEvent, Event_Id_NONE, GR_QUEUE_EVT,
+                               ICALL_TIMEOUT_FOREVER);
+
     }
 }
 
