@@ -2,6 +2,7 @@
 #define APPLICATION_GYRO_H_
 
 #include <math.h>
+#include "util.h"
 
 typedef struct
 {
@@ -16,6 +17,12 @@ typedef struct
     float y[2][2];
     float z[2][2];
 }xyz_f_2_2_t;
+
+typedef struct
+{
+  appEvtHdr_t hdr; // Event header
+  uint8_t xbuf[5];
+} mousepos_t;
 
 typedef struct
 {
@@ -54,7 +61,8 @@ typedef struct
 void Kanman_Init(KALMAN_STRUCT * kalman);
 void Kanman_Filter(KALMAN_STRUCT * kalman,float Gyro,float Accel,unsigned int dt);   //Gyro陀螺仪的测量值  |  Accel加速度计的角度计  |  dt的时间考虑用小数 或 更小的分度表示
 
-void Gyro_createTask(void);
+void Gyro_init(void);
+
 extern KALMAN_STRUCT *kalman;
 
 #endif /* APPLICATION_GYRO_H_ */

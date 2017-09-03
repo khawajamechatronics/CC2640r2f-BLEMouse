@@ -78,6 +78,7 @@
 #include "board.h"
 
 #include "hidemukbd.h"
+#include "gyro.h"
 
 /*********************************************************************
  * MACROS
@@ -135,10 +136,10 @@
 #define DEFAULT_PASSCODE                      0
 
 // Default GAP pairing mode
-#define DEFAULT_PAIRING_MODE                  GAPBOND_PAIRING_MODE_INITIATE
-
+//#define DEFAULT_PAIRING_MODE                  GAPBOND_PAIRING_MODE_WAIT_FOR_REQ
+#define DEFAULT_PAIRING_MODE  GAPBOND_PAIRING_MODE_INITIATE
 // Default MITM mode (TRUE to require passcode or OOB when pairing)
-#define DEFAULT_MITM_MODE                     FALSE
+#define DEFAULT_MITM_MODE                     TRUE
 
 // Default bonding mode, TRUE to bond
 #define DEFAULT_BONDING_MODE                  TRUE
@@ -161,11 +162,9 @@
 // Task Events
 #define HIDEMUKBD_ICALL_EVT                   ICALL_MSG_EVENT_ID // Event_Id_31
 #define HIDEMUKBD_QUEUE_EVT                   UTIL_QUEUE_EVENT_ID // Event_Id_30
-#define GR_QUEUE_EVT                          Event_Id_05
-
+#define GR_STATE_CHANGE_EVT                    Event_Id_10
 #define HIDEMUKBD_ALL_EVENTS                  (HIDEMUKBD_ICALL_EVT | \
-                                               HIDEMUKBD_QUEUE_EVT | \
-                                               GR_QUEUE_EVT)
+                                               HIDEMUKBD_QUEUE_EVT)
 
 /*********************************************************************
  * TYPEDEFS
@@ -424,6 +423,7 @@ void HidEmuKbd_init(void)
     uint8_t mitm = DEFAULT_MITM_MODE;
     uint8_t ioCap = DEFAULT_IO_CAPABILITIES;
     uint8_t bonding = DEFAULT_BONDING_MODE;
+    uint8_t autoSyncWhitelist = TRUE;
 
     GAPBondMgr_SetParameter(GAPBOND_DEFAULT_PASSCODE, sizeof(uint32_t),
                             &passkey);
@@ -431,6 +431,7 @@ void HidEmuKbd_init(void)
     GAPBondMgr_SetParameter(GAPBOND_MITM_PROTECTION, sizeof(uint8_t), &mitm);
     GAPBondMgr_SetParameter(GAPBOND_IO_CAPABILITIES, sizeof(uint8_t), &ioCap);
     GAPBondMgr_SetParameter(GAPBOND_BONDING_ENABLED, sizeof(uint8_t), &bonding);
+    GAPBondMgr_SetParameter(GAPBOND_AUTO_SYNC_WL, sizeof ( uint8 ), &autoSyncWhitelist );
   }
 
   // Setup Battery Characteristic Values
@@ -451,6 +452,8 @@ void HidEmuKbd_init(void)
 
   // Initialize keys on SmartRF06EB.
   Board_initKeys(HidEmuKbd_keyPressHandler);
+
+  Gyro_init();
 
   // Register with GAP for HCI/Host messages
   GAP_RegisterForMsgs(selfEntity);
@@ -525,6 +528,10 @@ void HidEmuKbd_taskFxn(UArg a0, UArg a1)
             ICall_free(pMsg);
           }
         }
+      }
+      if (events & GR_STATE_CHANGE_EVT)
+      {
+
       }
     }
   }

@@ -69,6 +69,8 @@
 #ifndef USE_DEFAULT_USER_CFG
 
 #include "ble_user_config.h"
+#include "uart_printf.h"
+#include <xdc/runtime/System.h>
 
 // BLE user defined configuration
 #ifdef ICALL_JT
@@ -134,7 +136,11 @@ int main()
   RegisterAssertCback(AssertHandler);
 
   PIN_init(BoardGpioInitTable);
-
+  UART_Params uartParams;
+  UART_Params_init(&uartParams);
+  uartParams.baudRate = 115200;
+  UartPrintf_init(UART_open(Board_UART0, &uartParams));
+  System_printf("Hello\n");
 #ifndef POWER_SAVING
   /* Set constraints for Standby, powerdown and idle mode */
   Power_setConstraint  (PowerCC26XX_SB_DISALLOW);
@@ -146,6 +152,7 @@ int main()
   user0Cfg.appServiceInfo->timerTickPeriod = Clock_tickPeriod;
   user0Cfg.appServiceInfo->timerMaxMillisecond  = ICall_getMaxMSecs();
 #endif  /* ICALL_JT */
+
   /* Initialize ICall module */
   ICall_init();
 
@@ -160,8 +167,6 @@ int main()
 
   /* Kick off application - Priority 2 */
   HidEmuKbd_createTask();
-
-  Gyro_createTask();
 
   /* enable interrupts and start SYS/BIOS */
   BIOS_start();
@@ -211,7 +216,7 @@ void AssertHandler(uint8 assertCause, uint8 assertSubcause)
   // Open the display if the app has not already done so
   if ( !dispHandle )
   {
-    dispHandle = Display_open(Display_Type_LCD, NULL);
+    dispHandle = Display_open(Display_Type_ALL, NULL);
   }
 
   Display_print0(dispHandle, 0, 0, ">>>STACK ASSERT");

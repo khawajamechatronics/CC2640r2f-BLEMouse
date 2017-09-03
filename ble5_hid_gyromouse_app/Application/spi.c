@@ -60,7 +60,7 @@ int bspSpiRead(uint8_t *buf, size_t len)
 }
 
 
-/* See bsp_spi.h file for description */
+/* See spi.h file for description */
 void bspSpiFlush(void)
 {
   uint32_t ul;
@@ -69,7 +69,7 @@ void bspSpiFlush(void)
 }
 
 
-/* See bsp_spi.h file for description */
+/* See spi.h file for description */
 void bspSpiOpen(uint32_t bitRate, uint32_t clkPin)
 {
   /* GPIO power && SPI power domain */

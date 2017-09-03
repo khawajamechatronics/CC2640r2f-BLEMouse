@@ -11,9 +11,9 @@
 #include "driverlib/gpio.h"
 
 #define BSP_SPI_CS       IOID_20
-#define BSP_SPI_MOSI            IOID_9
-#define BSP_SPI_MISO            IOID_8
-#define BSP_SPI_CLK_FLASH       IOID_10
+#define BSP_SPI_MOSI     IOID_9
+#define BSP_SPI_MISO     IOID_8
+#define BSP_SPI_CLK      IOID_10
 
 /**
 * Initialize SPI interface

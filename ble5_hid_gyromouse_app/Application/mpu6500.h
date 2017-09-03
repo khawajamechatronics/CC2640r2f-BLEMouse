@@ -20,12 +20,12 @@ extern MPU6500_STRUCT mpu6500;
 
 int MPU6500_Init(unsigned int lpf);
 void MPU6500_Read(MPU6500_STRUCT * mpu6500);
-void MPU6500_Data_Prepare(float T);
+//void MPU6500_Data_Prepare(float T);
 
 // MPU6500, Standard address 0x68
 
-#define MPU6500_ADDRESS         0x68
-#define MPU6500_WHO_AM_I        0x75
+//#define MPU6500_ADDRESS         0x68
+//#define MPU6500_WHO_AM_I        0x75
 #define MPU6500_SMPLRT_DIV      0  //8000Hz
 #define MPU6500_DLPF_CFG        0
 #define MPU6500_GYRO_OUT        0x43     //MPU6500陀螺仪数据寄存器地址

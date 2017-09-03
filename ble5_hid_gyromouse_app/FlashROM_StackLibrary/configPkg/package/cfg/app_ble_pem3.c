@@ -1175,11 +1175,14 @@ extern xdc_Void ti_sysbios_knl_Clock_doTick__I(xdc_UArg);
 /* --> Power_idleFunc */
 extern xdc_Void Power_idleFunc(xdc_Void);
 
+/* --> uartPrintf_flush */
+extern xdc_Void uartPrintf_flush(xdc_Void);
+
 /* --> ti_sysbios_knl_Idle_funcList__A */
-const __T1_ti_sysbios_knl_Idle_funcList ti_sysbios_knl_Idle_funcList__A[1];
+const __T1_ti_sysbios_knl_Idle_funcList ti_sysbios_knl_Idle_funcList__A[2];
 
 /* --> ti_sysbios_knl_Idle_coreList__A */
-const __T1_ti_sysbios_knl_Idle_coreList ti_sysbios_knl_Idle_coreList__A[1];
+const __T1_ti_sysbios_knl_Idle_coreList ti_sysbios_knl_Idle_coreList__A[2];
 
 
 /*
@@ -1458,8 +1461,8 @@ extern xdc_Void xdc_runtime_SysCallback_defaultExit(xdc_Int);
 /* --> xdc_runtime_SysCallback_defaultFlush */
 extern xdc_Void xdc_runtime_SysCallback_defaultFlush(xdc_Void);
 
-/* --> xdc_runtime_SysCallback_defaultPutch */
-extern xdc_Void xdc_runtime_SysCallback_defaultPutch(xdc_Char);
+/* --> uartPrintf_putch */
+extern xdc_Void uartPrintf_putch(xdc_Char);
 
 /* --> xdc_runtime_SysCallback_defaultReady */
 extern xdc_Bool xdc_runtime_SysCallback_defaultReady(xdc_Void);
@@ -4263,14 +4266,16 @@ __FAR__ const CT__ti_sysbios_knl_Event_A_pendTaskDisabled ti_sysbios_knl_Event_A
 
 /* --> ti_sysbios_knl_Idle_funcList__A */
 #pragma DATA_SECTION(ti_sysbios_knl_Idle_funcList__A, ".const:ti_sysbios_knl_Idle_funcList__A");
-const __T1_ti_sysbios_knl_Idle_funcList ti_sysbios_knl_Idle_funcList__A[1] = {
+const __T1_ti_sysbios_knl_Idle_funcList ti_sysbios_knl_Idle_funcList__A[2] = {
     ((xdc_Void(*)(xdc_Void))((xdc_Fxn)Power_idleFunc)),  /* [0] */
+    ((xdc_Void(*)(xdc_Void))((xdc_Fxn)uartPrintf_flush)),  /* [1] */
 };
 
 /* --> ti_sysbios_knl_Idle_coreList__A */
 #pragma DATA_SECTION(ti_sysbios_knl_Idle_coreList__A, ".const:ti_sysbios_knl_Idle_coreList__A");
-const __T1_ti_sysbios_knl_Idle_coreList ti_sysbios_knl_Idle_coreList__A[1] = {
+const __T1_ti_sysbios_knl_Idle_coreList ti_sysbios_knl_Idle_coreList__A[2] = {
     (xdc_UInt)0x0,  /* [0] */
+    (xdc_UInt)0x0,  /* [1] */
 };
 
 /* Module__diagsEnabled__C */
@@ -4343,11 +4348,11 @@ __FAR__ const CT__ti_sysbios_knl_Idle_Object__table ti_sysbios_knl_Idle_Object__
 
 /* funcList__C */
 #pragma DATA_SECTION(ti_sysbios_knl_Idle_funcList__C, ".const:ti_sysbios_knl_Idle_funcList__C");
-__FAR__ const CT__ti_sysbios_knl_Idle_funcList ti_sysbios_knl_Idle_funcList__C = {1, (ti_sysbios_knl_Idle_funcList__A)};
+__FAR__ const CT__ti_sysbios_knl_Idle_funcList ti_sysbios_knl_Idle_funcList__C = {2, (ti_sysbios_knl_Idle_funcList__A)};
 
 /* coreList__C */
 #pragma DATA_SECTION(ti_sysbios_knl_Idle_coreList__C, ".const:ti_sysbios_knl_Idle_coreList__C");
-__FAR__ const CT__ti_sysbios_knl_Idle_coreList ti_sysbios_knl_Idle_coreList__C = {1, (ti_sysbios_knl_Idle_coreList__A)};
+__FAR__ const CT__ti_sysbios_knl_Idle_coreList ti_sysbios_knl_Idle_coreList__C = {2, (ti_sysbios_knl_Idle_coreList__A)};
 
 
 /*
@@ -6551,7 +6556,7 @@ __FAR__ const CT__xdc_runtime_SysCallback_flushFxn xdc_runtime_SysCallback_flush
 
 /* putchFxn__C */
 #pragma DATA_SECTION(xdc_runtime_SysCallback_putchFxn__C, ".const:xdc_runtime_SysCallback_putchFxn__C");
-__FAR__ const CT__xdc_runtime_SysCallback_putchFxn xdc_runtime_SysCallback_putchFxn__C = ((CT__xdc_runtime_SysCallback_putchFxn)((xdc_Fxn)xdc_runtime_SysCallback_defaultPutch));
+__FAR__ const CT__xdc_runtime_SysCallback_putchFxn xdc_runtime_SysCallback_putchFxn__C = ((CT__xdc_runtime_SysCallback_putchFxn)((xdc_Fxn)uartPrintf_putch));
 
 /* readyFxn__C */
 #pragma DATA_SECTION(xdc_runtime_SysCallback_readyFxn__C, ".const:xdc_runtime_SysCallback_readyFxn__C");

@@ -10,6 +10,7 @@ C_SRCS += \
 ../Application/gyro.c \
 ../Application/hidemukbd.c \
 ../Application/spi.c \
+../Application/uart_printf.c \
 ../Application/util.c 
 
 C_DEPS += \
@@ -17,6 +18,7 @@ C_DEPS += \
 ./Application/gyro.d \
 ./Application/hidemukbd.d \
 ./Application/spi.d \
+./Application/uart_printf.d \
 ./Application/util.d 
 
 OBJS += \
@@ -24,6 +26,7 @@ OBJS += \
 ./Application/gyro.obj \
 ./Application/hidemukbd.obj \
 ./Application/spi.obj \
+./Application/uart_printf.obj \
 ./Application/util.obj 
 
 OBJS__QUOTED += \
@@ -31,6 +34,7 @@ OBJS__QUOTED += \
 "Application\gyro.obj" \
 "Application\hidemukbd.obj" \
 "Application\spi.obj" \
+"Application\uart_printf.obj" \
 "Application\util.obj" 
 
 C_DEPS__QUOTED += \
@@ -38,6 +42,7 @@ C_DEPS__QUOTED += \
 "Application\gyro.d" \
 "Application\hidemukbd.d" \
 "Application\spi.d" \
+"Application\uart_printf.d" \
 "Application\util.d" 
 
 C_SRCS__QUOTED += \
@@ -45,6 +50,7 @@ C_SRCS__QUOTED += \
 "../Application/gyro.c" \
 "../Application/hidemukbd.c" \
 "../Application/spi.c" \
+"../Application/uart_printf.c" \
 "../Application/util.c" 
 
 

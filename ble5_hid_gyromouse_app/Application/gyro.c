@@ -1,41 +1,19 @@
 #include "mpu6500.h"
-#include "util.h"
 
-#include <icall.h>
 #include <stdint.h>
+#include <stdlib.h>
+
+#include <Board.h>
+#include <ti/drivers/pin/PINCC26XX.h>
 #include <ti/sysbios/knl/Task.h>
 #include <ti/sysbios/knl/Clock.h>
 #include <ti/sysbios/knl/Event.h>
 #include <ti/sysbios/knl/Queue.h>
 
-#include <ti/drivers/pin/PINCC26XX.h>
-#include <ti/drivers/SPI.h>
-
-#include "icall_ble_api.h"
-//#include "ll_common.h"
-
-#include "peripheral.h"
-
 #include "gyro.h"
-#include "hidemukbd.h"
-#include "board.h"
-
-#define GR_QUEUE_EVT                          Event_Id_05
+#include "spi.h"
 
 KALMAN_STRUCT *kalman;
-// Entity ID globally used to check for source and/or destination of messages
-static ICall_EntityID gyroEntity;
-
-// Event globally used to post local events and pend on system and
-// local events.
-static ICall_SyncHandle gyroEvent;
-
-static Queue_Struct appMsg;
-static Queue_Handle appMsgQueue;
-
-// Task configuration
-Task_Struct gyroTask;
-Char gyroTaskStackSize[644];
 
 /* Pin driver handles */
 static PIN_Handle ledPinHandle;
@@ -48,69 +26,14 @@ PIN_Config ledPinTable[] = {
     PIN_TERMINATE
 };
 
-#define GR_STATE_CHANGE_EVT                    Event_Id_05
-
-typedef struct
-{
-  appEvtHdr_t hdr; // Event header
-  uint8_t x,y;
-} mousepos_t;
-
-static void Gyro_init(void);
-static void Gyro_taskFxn(UArg a0, UArg a1);
-static uint8_t Gyro_enqueueMsg(uint8_t x, uint8_t y);
-void Gyro_createTask(void);
-
-void Gyro_createTask(void)
-{
-    Task_Params taskParams;
-    Task_Params_init(&taskParams);
-    taskParams.stack = gyroTaskStackSize;
-    taskParams.stackSize = 644;
-    taskParams.priority = 1;
-    Task_construct(&gyroTask, Gyro_taskFxn, &taskParams, NULL);
-}
+#define MSGSIZE 256
 
 void Gyro_init(void)
 {
     kalman = malloc(sizeof(KALMAN_STRUCT));
     Kanman_Init(kalman);
-    SPI_init();
+    bspSpiOpen(1000000,BSP_SPI_CLK);
     ledPinHandle = PIN_open(&ledPinState, ledPinTable);
-    ICall_registerApp(&gyroEntity, &gyroEvent);
-    appMsgQueue = Util_constructQueue(&appMsg);
-}
-
-void Gyro_taskFxn(UArg a0, UArg a1)
-{
-    // Initialize the application.
-    Gyro_init();
-    // Application main loop.
-    for (;;)
-    {
-        uint32_t events;
-        events = Event_pend(gyroEvent, Event_Id_NONE, GR_QUEUE_EVT,
-                               ICALL_TIMEOUT_FOREVER);
-
-    }
-}
-
-static uint8_t Gyro_enqueueMsg(uint8_t x, uint8_t y)
-{
-  mousepos_t *pMsg;
-
-  // Create dynamic pointer to message.
-  if (pMsg = ICall_malloc(sizeof(mousepos_t)))
-  {
-    //pMsg->hdr.event = event;
-    pMsg->hdr.event = GR_STATE_CHANGE_EVT;
-    pMsg->hdr.state = NULL;
-
-    // Enqueue the message.
-    //return Util_enqueueMsg(appMsgQueue, syncEvent, (uint8_t *)pMsg);
-  }
-
-  return FALSE;
 }
 
 void Kanman_Init(KALMAN_STRUCT * kalman)
@@ -122,7 +45,7 @@ void Kanman_Init(KALMAN_STRUCT * kalman)
 
     //固定参量
     (*kalman).Q_Angle = 0.001;      //{0.001,0.001,0.001};  //陀螺仪噪声协方差  0.001是经验值
-    (*kalman).Q_Gyro = 0.003;       //{0.003,0.003,0.003};  //陀螺仪漂移噪声协方差    是mpu6050的经验值
+    (*kalman).Q_Gyro = 0.003;       //{0.003,0.003,0.003};  //陀螺仪漂移噪声协方差    是mpu6500的经验值
     (*kalman).R_Angle = 0.5;        //{0.5,0.5,0.5};    //是加速度计噪声的协方差
 
     (*kalman).C_0 = 1;      //{1,1,1};  //H矩阵的一个观测参数 是常数
@@ -237,12 +160,13 @@ int MPU6500_Init(unsigned int lpf)
         break;
     }
 
-    //delay_ms(200);
+    Task_sleep(1000);
 
-    /*//设备复位
+    Task_sleep(1000);
+
+    /*
 //  IIC_Write_1Byte(MPU6500_SLAVE_ADDRESS,MPU6500_RA_PWR_MGMT_1, 0x80);
 
-    //这里使用的Delay()只能在初始化阶段使用，任务调度中使用这种Delay()，会卡死整个调度
     MPU6500_setSleepEnabled(0); //进入工作状态
     delay_ms(10);
     MPU6500_setClockSource(MPU6500_CLOCK_PLL_ZGYRO);    //设置时钟  0x6b   0x03

@@ -2906,7 +2906,7 @@ __o = __obj[215]  // xdc.runtime.SysCallback
     __o['configNameMap$'] = __obj[218.0]
     __o['exitFxn'] = String(java.net.URLDecoder.decode('%26xdc_runtime_SysCallback_defaultExit', 'UTF-8'))
     __o['flushFxn'] = String(java.net.URLDecoder.decode('%26xdc_runtime_SysCallback_defaultFlush', 'UTF-8'))
-    __o['putchFxn'] = String(java.net.URLDecoder.decode('%26xdc_runtime_SysCallback_defaultPutch', 'UTF-8'))
+    __o['putchFxn'] = String(java.net.URLDecoder.decode('%26uartPrintf_putch', 'UTF-8'))
     __o['readyFxn'] = String(java.net.URLDecoder.decode('%26xdc_runtime_SysCallback_defaultReady', 'UTF-8'))
     __o['rovShowRawTab$'] = true
     __o['viewNameMap$'] = __obj[231.0]
@@ -5336,11 +5336,13 @@ __o = __obj[461]  // ti.sysbios.knl.Idle/coreList
     __o['$category'] = String(java.net.URLDecoder.decode('Vector', 'UTF-8'))
     __o['$name'] = String(java.net.URLDecoder.decode('ti.sysbios.knl.Idle%2FcoreList', 'UTF-8'))
     __o['0'] = 0
+    __o['1'] = 0
 
 __o = __obj[462]  // ti.sysbios.knl.Idle/funcList
     __o['$category'] = String(java.net.URLDecoder.decode('Vector', 'UTF-8'))
     __o['$name'] = String(java.net.URLDecoder.decode('ti.sysbios.knl.Idle%2FfuncList', 'UTF-8'))
     __o['0'] = String(java.net.URLDecoder.decode('%26Power_idleFunc', 'UTF-8'))
+    __o['1'] = String(java.net.URLDecoder.decode('%26uartPrintf_flush', 'UTF-8'))
 
 __o = __obj[463]  // ti.sysbios.knl.Idle/idleFxns
     __o['$category'] = String(java.net.URLDecoder.decode('Vector', 'UTF-8'))
